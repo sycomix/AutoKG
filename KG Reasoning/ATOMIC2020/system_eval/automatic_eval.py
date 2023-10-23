@@ -12,8 +12,10 @@ import random
 def get_reference_sentences(filename):
     result = []
     with open(filename) as file:
-        for line in file:
-            result.append([x.strip() for x in line.split('\t')[1].split('|')])
+        result.extend(
+            [x.strip() for x in line.split('\t')[1].split('|')]
+            for line in file
+        )
     return result
 
 def postprocess(sentence):
@@ -38,8 +40,7 @@ def get_hypothesises(filename):
     import json
 
     with open(filename) as file:
-        for line in file:
-            result.append(json.loads(line)["greedy"])
+        result.extend(json.loads(line)["greedy"] for line in file)
     return result
 
 def preprocess_generations(args):
@@ -99,21 +100,16 @@ def preprocess_generations(args):
 
     for relation in relation_bleu_1:
         summary[relation] = relation_bleu_1[relation]["total"] / relation_bleu_1[relation]["count"]
-        
+
     outfile_scores.write(json.dumps(summary) + "\n")
-    excel_str = ""
-    for key in summary:
-        excel_str += str(key) + '\t'
+    excel_str = "".join(str(key) + '\t' for key in summary)
     outfile_scores.write(excel_str.strip())
     outfile_scores.write("\n")
-    excel_str = ""
-    for key in summary:
-        excel_str += str(summary[key]) + '\t'
-
+    excel_str = "".join(str(value) + '\t' for value in summary.values())
     outfile_scores.write(excel_str.strip())
 
     print(f"Saved gens in {outfile_path}")
-    
+
     return(os.path.abspath(outfile_path))
 
 def get_tuple(l):
@@ -149,7 +145,7 @@ def topk_eval(model_name, data, k):
             instance["generation"] = g
             instances.append(instance)
 
-            key = str(i) + "_" + str(j)
+            key = f"{str(i)}_{str(j)}"
             topk_gts[key] = tails
             topk_res[key] = [g]
 
@@ -168,7 +164,7 @@ def topk_eval(model_name, data, k):
 
     QGEval = QGEvalCap(model_name, topk_gts, topk_res)
     score, scores = QGEval.evaluate()
-    
+
     return score, scores, instances
 
 
@@ -176,10 +172,7 @@ def eval(data_file, model_name):
 
     data = read_jsonl(data_file)
 
-    if len(data) == 0:
-        return None
-
-    return topk_eval(model_name, data, k=1)
+    return None if len(data) == 0 else topk_eval(model_name, data, k=1)
 
 def toRow(name, results, columns):
     return [name] + [format(float(results[c]), '#.3f') for c in columns]
@@ -201,10 +194,10 @@ def main():
     scores_per_model = []
     add_column = True
     for f, m in expts:
-        result_file = './results/{}_scores.jsonl'.format(m)
+        result_file = f'./results/{m}_scores.jsonl'
 
         s, scores, instances = eval(f, model_name=m)
-        if s == None:
+        if s is None:
             print("Skipping ", m)
             continue
 
@@ -227,7 +220,7 @@ def main():
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     print(scores_per_model)
 
-    write_jsonl('./results/scores_{}.jsonl'.format(date), scores_per_model)
+    write_jsonl(f'./results/scores_{date}.jsonl', scores_per_model)
     print(tabulate(rows, headers='firstrow', tablefmt='latex', floatfmt='#.3f'))
     print(tabulate(rows, tablefmt='tsv', floatfmt='#.3f'))
 

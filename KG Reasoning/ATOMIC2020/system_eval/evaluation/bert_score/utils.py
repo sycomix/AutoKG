@@ -38,7 +38,7 @@ def bert_encode(model, x, attention_mask):
 
 
 def process(a, tokenizer=None):
-    if not tokenizer is None:
+    if tokenizer is not None:
         a = ["[CLS]"]+tokenizer.tokenize(a)+["[SEP]"]
         a = tokenizer.convert_tokens_to_ids(a)
     return set(a)
@@ -208,5 +208,4 @@ def bert_cos_score_idf(model, refs, hyps, tokenizer, idf_dict,
 
         P, R, F1 = greedy_cos_idf(*ref_stats, *hyp_stats)
         preds.append(torch.stack((P, R, F1), dim=1).cpu())
-    preds = torch.cat(preds, dim=0)
-    return preds
+    return torch.cat(preds, dim=0)

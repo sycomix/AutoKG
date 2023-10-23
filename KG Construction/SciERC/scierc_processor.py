@@ -3,13 +3,14 @@ import random
 data = open('datas/scierc_test.json', 'r', encoding='utf-8')
 test  = []
 
-for line in data.readlines():
+for line in data:
     dict = json.loads(line)
-    ins = {}
-    ins['relation'] = dict['relation']
-    ins['tokens'] = ' '.join(dict['token'])
-    ins["h"] = dict['h']
-    ins["t"] = dict['t']
+    ins = {
+        'relation': dict['relation'],
+        'tokens': ' '.join(dict['token']),
+        "h": dict['h'],
+        "t": dict['t'],
+    }
     test.append(ins)
 
 all_list_sampled = random.sample(test,40)

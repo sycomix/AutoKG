@@ -58,17 +58,13 @@ def eval(model_key, sources, references, predictions, results_file=None):
     """
 
     pairs = []
-    
+
     for tup in sources:
-        pair = {}
-        pair['tokenized_sentence'] = tup
+        pair = {'tokenized_sentence': tup}
         pairs.append(pair)
 
-    cnt = 0
-    for line in references:
+    for cnt, line in enumerate(references):
         pairs[cnt]['tokenized_question'] = line
-        cnt += 1
-
     output = predictions
 
     for idx, pair in enumerate(pairs):
@@ -86,7 +82,7 @@ def eval(model_key, sources, references, predictions, results_file=None):
         key = pair['tokenized_sentence']
         #res[key] = [pair['prediction']]
         res[key] = pair['prediction']
- 
+
         ## gts 
         gts[key].append(pair['tokenized_question'])
 
@@ -110,7 +106,7 @@ def preprocess(file_name, keys):
 
     for elem in generations:
         label = elem["label"]
-        hyp = elem["hyp"+label]
+        hyp = elem[f"hyp{label}"]
         for key in keys_list:
             if key in elem["generations"]:
                 references[key].append(hyp)
@@ -128,10 +124,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     print("scores: \n")
-    keys=None
-    if args.keys:
-        keys = args.keys.split(",")
-    
+    keys = args.keys.split(",") if args.keys else None
     sources, references, predictions = preprocess(args.gen_file, keys)
     for key in references.keys():
         print("\nEvaluating %s" %key)

@@ -12,7 +12,7 @@ def read_csv(input_file, quotechar='"', delimiter=",", skip_header=False):
         lines = []
         for line in reader:
             if sys.version_info[0] == 2:
-                line = list(unicode(cell, 'utf-8') for cell in line)
+                line = [unicode(cell, 'utf-8') for cell in line]
             lines.append(line)
         if skip_header:
             lines = lines[1:]
@@ -47,17 +47,14 @@ def write_csv(filename, data, fieldnames):
 
         writer.writeheader()
         for d in data:
-            formatted_d = {}
-            for key, val in d.items():
-                formatted_d[key] = json.dumps(val)
+            formatted_d = {key: json.dumps(val) for key, val in d.items()}
             writer.writerow(formatted_d)
 
 
 def read_jsonl(filename):
     data = []
     with open(filename, "r") as f:
-        for line in f:
-            data.append(json.loads(line))
+        data.extend(json.loads(line) for line in f)
     return data
 
 
@@ -97,13 +94,13 @@ def count_relation(d):
     sorted_head_count = dict(sorted(head_count.items(), key=operator.itemgetter(1), reverse=True))
 
     print("Relations:")
-    for r in sorted_relation_count.keys():
+    for r in sorted_relation_count:
         print(r, sorted_relation_count[r])
 
     print("\nPrefixes:")
     print("uniq prefixes: ", len(sorted_prefix_count.keys()))
     i = 0
-    for r in sorted_prefix_count.keys():
+    for r in sorted_prefix_count:
         print(r, sorted_prefix_count[r])
         i += 1
         if i > 20:
@@ -111,7 +108,7 @@ def count_relation(d):
 
     print("\nHeads:")
     i = 0
-    for r in sorted_head_count.keys():
+    for r in sorted_head_count:
         print(r, sorted_head_count[r])
         i += 1
         if i > 20:
@@ -119,7 +116,7 @@ def count_relation(d):
 
 
 def get_head_set(d):
-    return set([l[0] for l in d])
+    return {l[0] for l in d}
 
 
 def head_based_split(data, dev_size, test_size, head_size_threshold=500, dev_heads=[], test_heads=[]):
@@ -160,7 +157,7 @@ def head_based_split(data, dev_size, test_size, head_size_threshold=500, dev_hea
             test_head_total_count += c
             remaining_heads.pop(h)
 
-    test = [l for l in data if l[0] in test_selected_heads.keys()]
+    test = [l for l in data if l[0] in test_selected_heads]
 
     dev_selected_heads = {}
     dev_head_total_count = 0
@@ -180,7 +177,7 @@ def head_based_split(data, dev_size, test_size, head_size_threshold=500, dev_hea
             dev_head_total_count += c
             remaining_heads.pop(h)
 
-    dev = [l for l in data if l[0] in dev_selected_heads.keys()]
+    dev = [l for l in data if l[0] in dev_selected_heads]
 
     dev_test_heads = set(list(dev_selected_heads.keys()) + list(test_selected_heads.keys()))
     train = [l for l in data if l[0] not in dev_test_heads]

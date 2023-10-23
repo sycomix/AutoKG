@@ -36,7 +36,9 @@ def score(cands, refs, bert="bert-base-multilingual-cased",
     model.to(device)
 
     # drop unused layers
-    model.encoder.layer = torch.nn.ModuleList([layer for layer in model.encoder.layer[:num_layers]])
+    model.encoder.layer = torch.nn.ModuleList(
+        list(model.encoder.layer[:num_layers])
+    )
 
     if no_idf:
         idf_dict = defaultdict(lambda: 1.)
@@ -89,7 +91,9 @@ def plot_example(h, r, verbose=False, bert="bert-base-multilingual-cased",
     h_tokens = ['[CLS]'] + tokenizer.tokenize(h) + ['[SEP]']
     r_tokens = ['[CLS]'] + tokenizer.tokenize(r) + ['[SEP]']
 
-    model.encoder.layer = torch.nn.ModuleList([layer for layer in model.encoder.layer[:num_layers]])
+    model.encoder.layer = torch.nn.ModuleList(
+        list(model.encoder.layer[:num_layers])
+    )
     idf_dict = defaultdict(lambda: 1.)
 
     ref_embedding, ref_lens, ref_masks, padded_idf = get_bert_embedding([r], model, tokenizer, idf_dict,
@@ -139,6 +143,6 @@ def plot_example(h, r, verbose=False, bert="bert-base-multilingual-cased",
     fig.tight_layout()
 #     plt.title("BERT-F1: {:.3f}".format(F1), fontsize=10)
     if fname != "":
-        print("Saved figure to file: ", fname+".png")
-        plt.savefig(fname+'.png', dpi=100)
+        print("Saved figure to file: ", f"{fname}.png")
+        plt.savefig(f'{fname}.png', dpi=100)
     plt.show()

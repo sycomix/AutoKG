@@ -4,11 +4,11 @@ data = json.load(open('datas/retacred_test.json','r'))
 test  = []
 
 for line in data:
-    ins = {}
-    ins['relation'] = line['relation']
-    ins['tokens'] = ' '.join(line['token'])
-    # ins['token'] = line['token']
-    ins['h'] = {}
+    ins = {
+        'relation': line['relation'],
+        'tokens': ' '.join(line['token']),
+        'h': {},
+    }
     ins['h']['name'] = ' '.join(line['token'][line['subj_start']:line['subj_end']+1])
     ins['h']['pos'] = [line['subj_start'], line['subj_end']+1]
     ins['subj_type'] = line['subj_type']

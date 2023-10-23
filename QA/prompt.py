@@ -16,7 +16,7 @@ def fbqa_prompt(shot: int=0, test_path='./FreebaseQA/FreebaseQA-20-sample.json')
         # prompt = prefix + sample['Question']
         # prompt = sample['Question']
         if shot == 0:
-            prompt = prefix + 'Question: ' + sample['Question'] + '\nAnswer: '
+            prompt = f'{prefix}Question: ' + sample['Question'] + '\nAnswer: '
         elif shot == 1:
             icl = "Question: Who wrote the 1956 novel '101 Dalmatians'?\nAnswer: dodie smith\n"
             prompt = prefix + icl + 'Question: ' + sample['Question'] + '\nAnswer: '
@@ -45,7 +45,7 @@ def meta_prompt(shot: int=0, test_path='./MetaQA/MetaQA-20-sample.json'):
             # prompt = prefix + sample['Question'] + ' ?'
             # prompt = sample['Question'] + ' ?'
             if shot == 0:
-                prompt = prefix + 'Question: ' + sample['Question'] + ' ?' + '\nAnswer: '
+                prompt = f'{prefix}Question: ' + sample['Question'] + ' ?' + '\nAnswer: '
             elif shot == 1:
                 icl_1 = "Question: [Aaron Lipstadt] was the director of which movies ?\nAnswer: Android|City Limits\n"
                 icl_2 = "Question: the director of [Five Weeks in a Balloon] also directed which movies ?\nAnswer: The Swarm|The Poseidon Adventure|Voyage to the Bottom of the Sea|Beyond the Poseidon Adventure|The Lost World\n"

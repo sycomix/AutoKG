@@ -40,22 +40,20 @@ def Retrieval_Msg(assistant_role_name, user_role_name, task, word_limit):
                                                                  user_role_name=user_role_name,
                                                                  task=task, word_limit=word_limit)[0]
     specified_retrieval_msg = retrieval_specify_agent.step(retrieval_specifier_msg)
-    print(Fore.GREEN+f"Specified retrieval:\n{specified_retrieval_msg.content}")
+    print(f"{Fore.GREEN}Specified retrieval:\n{specified_retrieval_msg.content}")
     specified_retrieval = specified_retrieval_msg.content
     response = ""
 
     if "Browsing Question:" in specified_retrieval:
         if "Browsing Question: none" in specified_retrieval:
             return  response
-        else:
-            specified_retrieval = specified_retrieval.replace("Browsing Question:","")
-            # 加载 OpenAI 模型
-            llm = OpenAI(temperature=0,max_tokens=2048)
-             # 加载 serpapi 工具
-            tools = load_tools(["serpapi"])
-            # 工具加载后都需要初始化，verbose 参数为 True，会打印全部的执行详情
-            agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
-            # 运行 agent
-            response = agent.run(specified_retrieval)
+        specified_retrieval = specified_retrieval.replace("Browsing Question:","")
+        # 加载 OpenAI 模型
+        llm = OpenAI(temperature=0,max_tokens=2048)
+        tools = load_tools(["serpapi"])
+        # 工具加载后都需要初始化，verbose 参数为 True，会打印全部的执行详情
+        agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+        # 运行 agent
+        response = agent.run(specified_retrieval)
 
     return response

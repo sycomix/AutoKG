@@ -2,10 +2,7 @@ import json
 
 data = json.load(open('datas/VINE.json', 'r' ))
 
-predicate_all = []
-for line in data:
-    predicate_all.append( line['relation'])
-
+predicate_all = [line['relation'] for line in data]
 predicate_all_set = set(predicate_all)
 predicate_all = list(predicate_all_set)
 print(predicate_all)
@@ -20,13 +17,13 @@ with open('prompts/VINE-prompt.txt', 'w', encoding='utf-8') as f:
         sentence_1 = str(dict["tokens"])
         triple_1 = "["+str(dict["h"])+", "+ str(dict["relation"])+", "+str(dict["t"])+"]"
 
-        li = li+1
+        li += 1
         dict = data[li]
         sentence_2 = str(dict["tokens"])
         triple_2 = "["+str(dict["h"])+", "+ str(dict["relation"])+", "+str(dict["t"])+"]"
 
-        li = li+1
-        while  2 <= li % 10 <= 9:
+        li += 1
+        while 2 <= li % 10 <= 9:
             dict = data[li]
 
             sentence = str(dict["tokens"])
@@ -43,7 +40,7 @@ with open('prompts/VINE-prompt.txt', 'w', encoding='utf-8') as f:
                      "\nTriples: \n"
 
             f.write(str(li % 10-1))
-            li = li+1
+            li += 1
             f.write("\n")
             print(prompt)
             f.write(prompt)

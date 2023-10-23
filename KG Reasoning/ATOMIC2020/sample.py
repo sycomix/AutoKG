@@ -5,16 +5,11 @@ f3=open("test_sample.tsv")
 
 l=[]
 ll=[]
-for i in f2.readlines():
+for i in f2:
     l.append(i.strip('\n'))
     ll.append(i.split('\t')[1])
 
-ss=[]
-for i in f3.readlines():
-    ss.append(i.strip('\n').split('	')[1])
-
-
-
+ss = [i.strip('\n').split('	')[1] for i in f3]
 rel_set=[]
 lines =f.readlines()
 random.shuffle(lines)
@@ -27,9 +22,13 @@ for line in lines:
         s=ss[ll.index(rel)].split('	')[-1]
         sh=l[ll.index(rel)].split('\t')[0]
         w.write(line)
-        w.write("predict the tail entity [MASK] from the given ({}, {}, [MASK]) by completing the sentence \"{}\".The answer is {}.\n".format(head,rel,s,tail))
-        w.write("predict the tail entity [MASK] from the given ({}, {}, [MASK]) by completing the sentence \"{}\".The answer is \n".format(sh,rel,s))
-    
+        w.write(
+            f'predict the tail entity [MASK] from the given ({head}, {rel}, [MASK]) by completing the sentence \"{s}\".The answer is {tail}.\n'
+        )
+        w.write(
+            f'predict the tail entity [MASK] from the given ({sh}, {rel}, [MASK]) by completing the sentence \"{s}\".The answer is \n'
+        )
+
 print(len(rel_set))
 
 

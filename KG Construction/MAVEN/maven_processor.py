@@ -1,9 +1,7 @@
 import json
 import random
-data = open('datas/maven_valid.jsonl', 'r', encoding='utf-8')
-lines = data.readlines()
-data.close()
-
+with open('datas/maven_valid.jsonl', 'r', encoding='utf-8') as data:
+    lines = data.readlines()
 valid = []
 for line in lines:
     dict = json.loads(line)
@@ -11,15 +9,11 @@ for line in lines:
     content = dict["content"]
     # each sentence
     for i in range(len(content)):
-        ins = {}
-        ins["sentence"] = content[i]["sentence"]
-        ins["events"] = []
+        ins = {"sentence": content[i]["sentence"], "events": []}
         for eve in events:
             for men in eve["mention"]:
                 if i == men["sent_id"]:
-                    ins_i = {}
-                    ins_i["Event_type"] = eve["type"]
-                    ins_i["trigger_word"] = men["trigger_word"]
+                    ins_i = {"Event_type": eve["type"], "trigger_word": men["trigger_word"]}
                     ins["events"].append(ins_i)
                     break
         if len(ins["events"]) != 0:

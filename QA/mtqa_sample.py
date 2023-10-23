@@ -30,7 +30,7 @@ def sample(hop_num: int, sample_size=3, seed=1):
             ex['Answer'] = line.strip().split('\t')[1].split('|')
             qtype_example[qtype].append(ex)
     random.seed(seed)
-    for k, v in qtype_example.items():
+    for v in qtype_example.values():
         random.shuffle(v)
     # sample
     sample_dict = dict()

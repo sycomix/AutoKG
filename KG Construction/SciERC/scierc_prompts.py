@@ -3,7 +3,7 @@ import json
 data = open('datas/scierc_test.json', 'r')
 
 predicate_all=[]
-for line in data.readlines():
+for line in data:
     dict = json.loads(line)
     predicate_all.append(dict['relation'])
 
@@ -15,7 +15,7 @@ print(len(predicate_all))
 num = 1
 data = open('datas/scierc_sample.json', 'r', encoding='utf-8')
 with open('prompts/scierc-1-shot-prompt.txt', 'w') as f:
-    for line in data.readlines():
+    for line in data:
         ans_list = []
         dict = json.loads(line)
 
@@ -30,14 +30,17 @@ with open('prompts/scierc-1-shot-prompt.txt', 'w') as f:
         #          "\nTriples: \n"
 
         # 1-shot
-        prompt = "The list of predicates: " + str(predicate_all)+" ." \
-                  "\nWhat Subject-Predicate-Object triples are included in the following sentence? Please return the possible answers according to the list above. Require the answer only in the form: [subject, predicate, object]" +\
-                 "\n\nExample: "+\
-                 "\nThe given sentence is :  We show that various features based on the structure of email-threads can be used to improve upon lexical similarity of discourse segments for question-answer pairing . " + \
-                 "\nTriples: " +\
-                 "[lexical similarity , FEATURE-OF , discourse segments]" + \
-                 "\n\nThe given sentence is : " + str(dict['tokens']) + \
-                 "\nTriples: \n"
+        prompt = (
+            f"The list of predicates: {predicate_all}" + " ."
+            "\nWhat Subject-Predicate-Object triples are included in the following sentence? Please return the possible answers according to the list above. Require the answer only in the form: [subject, predicate, object]"
+            + "\n\nExample: "
+            + "\nThe given sentence is :  We show that various features based on the structure of email-threads can be used to improve upon lexical similarity of discourse segments for question-answer pairing . "
+            + "\nTriples: "
+            + "[lexical similarity , FEATURE-OF , discourse segments]"
+            + "\n\nThe given sentence is : "
+            + str(dict['tokens'])
+            + "\nTriples: \n"
+        )
 
         # print(prompt)
         f.write(prompt)
